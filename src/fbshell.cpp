@@ -39,7 +39,7 @@
 #define screen (Screen::instance())
 #define manager (FbShellManager::instance())
 
-static const Color defaultPalette[NR_COLORS] = {
+static Color defaultPalette[NR_COLORS] = {
 	{0x00, 0x00, 0x00}, /* 0 */
 	{0xaa, 0x00, 0x00}, /* 1 */
 	{0x00, 0xaa, 0x00}, /* 2 */
@@ -553,6 +553,8 @@ static s32 tty0_fd = -1;
 
 void FbShell::switchVt(bool enter, FbShell *peer)
 {
+	configColors();
+	
 	if (tty0_fd == -1) tty0_fd = open("/dev/tty0", O_RDWR);
 	if (tty0_fd != -1) {
 		seteuid(0);
