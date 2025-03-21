@@ -12,7 +12,6 @@ Features:
 
 Fixes:
 - unexpected character appears when toggling input method with Ctrl-Space
-- use Ctrl-Alt-F[7-12] to avoid tty switching shortcuts
 - some build errors
 
 ## DESCRIPTION
