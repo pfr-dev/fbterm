@@ -322,11 +322,11 @@ u8 VTerm::init_default_color(bool foreground)
 	if (foreground) {
 		color = 7;
 		Config::instance()->getOption("color-foreground", color);
-		if (color > 7) color = 7;
+		if (color > 255) color = 7;
 	} else {
 		color = 0;
 		Config::instance()->getOption("color-background", color);
-		if (color > 7) color = 0;
+		if (color > 255) color = 0;
 	}
 
 	return color;
@@ -771,4 +771,35 @@ bool FbShell::childProcessExited(s32 pid)
 	}
 
 	return false;
+}
+
+void FbShell::configColors(){
+	s8 varColor[32], color[7], rgb[3];
+	u32 i,j,k,x;
+	for(k=0;k<256;k++){
+		sprintf(varColor,"color-%d",k);
+		Config::instance()->getOption(varColor, color, sizeof(color));
+		for(i=0;i<3;i++){
+			rgb[i]=0;
+			for(j=0;j<2;j++){
+				x=i*2+j;
+				if(('0' <= color[x]) && (color[x] <= '9'))
+					rgb[i]|=(color[x]-48);
+				else if(('A' <= color[x]) && (color[x] <= 'F'))
+					rgb[i]|=(color[x]-55);
+				else if(('a' <= color[x]) && (color[x] <= 'f'))
+					rgb[i]|=(color[x]-87);
+				else
+					goto NoTouch;
+				if(!j)
+					rgb[i]<<=4;
+			}
+			if(i==2){
+				defaultPalette[k].red=rgb[0];
+				defaultPalette[k].green=rgb[1];
+				defaultPalette[k].blue=rgb[2];
+			}
+		}
+NoTouch:;
+	}
 }
